@@ -1,6 +1,6 @@
 -- enable line number and relative line number
 vim.opt.number = true
-vim.opt.relativenumber = false
+vim.opt.relativenumber = true
 
 -- width of a tab
 vim.opt.shiftwidth = 2
@@ -18,7 +18,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 -- remove block font side of number lines
-vim.opt.signcolumn = 'number'
+vim.opt.signcolumn = 'yes'
 
 -- set colorscheme
 vim.cmd("colorscheme carbonfox")
