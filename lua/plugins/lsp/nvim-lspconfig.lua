@@ -1,23 +1,47 @@
-return   {
+return  {
   'neovim/nvim-lspconfig',
   cmd = {'LspInfo', 'LspInstall', 'LspStart'},
   event = {'BufReadPre', 'BufNewFile'},
   dependencies = {
     {'hrsh7th/cmp-nvim-lsp'},
+    {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
   },
+  init = function()
+    -- Reserve a space in the gutter
+    -- This will avoid an annoying layout shift in the screen
+    vim.opt.signcolumn = 'yes'
+  end,
   config = function()
-    -- This is where all the LSP shenanigans will live
-    local lsp_zero = require('lsp-zero')
-    lsp_zero.extend_lspconfig()
+    local lsp_defaults = require('lspconfig').util.default_config
 
-    --- if you want to know more about lsp-zero and mason.nvim
-    --- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guides/integrate-with-mason-nvim.md
-    lsp_zero.on_attach(function(client, bufnr)
-      -- see :help lsp-zero-keybindings
-      -- to learn the available actions
-      lsp_zero.default_keymaps({buffer = bufnr})
-    end)
+    -- Add cmp_nvim_lsp capabilities settings to lspconfig
+    -- This should be executed before you configure any language server
+    lsp_defaults.capabilities = vim.tbl_deep_extend(
+      'force',
+      lsp_defaults.capabilities,
+      require('cmp_nvim_lsp').default_capabilities()
+    )
+
+    -- LspAttach is where you enable features that only work
+    -- if there is a language server active in the file
+    vim.api.nvim_create_autocmd('LspAttach', {
+      desc = 'LSP actions',
+      callback = function(event)
+        local opts = {buffer = event.buf}
+
+        vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+        vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+        vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
+        vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+        vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+        vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
+        vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+        vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
+        vim.keymap.set({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+        vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+      end,
+    })
 
     require('mason-lspconfig').setup({
       ensure_installed = {},
@@ -26,13 +50,6 @@ return   {
         -- it applies to every language server without a "custom handler"
         function(server_name)
           require('lspconfig')[server_name].setup({})
-        end,
-
-        -- this is the "custom handler" for `lua_ls`
-        lua_ls = function()
-          -- (Optional) Configure lua language server for neovim
-          local lua_opts = lsp_zero.nvim_lua_ls()
-          require('lspconfig').lua_ls.setup(lua_opts)
         end,
       }
     })
