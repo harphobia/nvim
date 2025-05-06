@@ -9,8 +9,7 @@ return {
     require("telescope").setup({
       extensions = {
         file_browser = {
-          theme = "ivy",
-          -- disables netrw and use telescope-file-browser in its place
+          -- theme = "ivy",
           hijack_netrw = true,
         }
       }

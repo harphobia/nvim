@@ -3,6 +3,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "tsakirist/telescope-lazy.nvim",
+    "nvim-telescope/telescope-file-browser.nvim",
   },
   keys = {
     { "<Leader>ff", "<cmd>Telescope find_files<cr>", desc="[F]ind [F]iles" },
