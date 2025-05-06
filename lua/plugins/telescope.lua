@@ -1,14 +1,15 @@
 return {
   "nvim-telescope/telescope.nvim",
   dependencies = {
+    "nvim-lua/plenary.nvim",
     "tsakirist/telescope-lazy.nvim",
-    "nvim-lua/plenary.nvim"
   },
   keys = {
     { "<Leader>ff", "<cmd>Telescope find_files<cr>", desc="[F]ind [F]iles" },
     { "<Leader>fg", "<cmd>Telescope live_grep<cr>", desc="[F]ind [G]rep" },
     { "<Leader>fb", "<cmd>Telescope buffers<cr>", desc="[F]ind [B]uffer" },
-    { "<Leader>fh", "<cmd>Telescope help_tags<cr>", desc="[F]ind [H]elp tags" }
+    { "<Leader>fh", "<cmd>Telescope help_tags<cr>", desc="[F]ind [H]elp tags" },
+    { "<Leader>ft", "<cmd>Telescope file_browser<cr>", desc="[F]ile [T]ee" }
   },
   config = function ()
     extensions = {
@@ -54,4 +55,5 @@ return {
         -- Other telescope configuration options
       },
     }
-  end }
+  end
+}
